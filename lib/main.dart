@@ -41,7 +41,11 @@ class StartPage extends StatefulWidget {
 
 class _StartPageState extends State<StartPage> {
   List<Word> words = [];
-  Map<String, List<Word>> wordMap = {'a': [], 'b': [], 'c': []};
+  Map<String, List<Word>> wordMap = {
+    'a': [],
+    'b': [],
+    'c': [],
+  };
 
   @override
   void initState() {
@@ -90,6 +94,9 @@ class _StartPageState extends State<StartPage> {
             Center(
               child: ListView.builder(
                   itemCount: wordMap['a']!.length,
+                  prototypeItem: ListTile(
+                    title: WordCard(word: wordMap['a']!.first),
+                  ),
                   itemBuilder: (context, index) {
                     return WordCard(word: wordMap['a']![index]);
                   }),
@@ -97,6 +104,9 @@ class _StartPageState extends State<StartPage> {
             Center(
               child: ListView.builder(
                   itemCount: wordMap['b']!.length,
+                  prototypeItem: ListTile(
+                    title: WordCard(word: wordMap['b']!.first),
+                  ),
                   itemBuilder: (context, index) {
                     return WordCard(word: wordMap['b']![index]);
                   }),
@@ -104,6 +114,9 @@ class _StartPageState extends State<StartPage> {
             Center(
               child: ListView.builder(
                   itemCount: wordMap['c']!.length,
+                  prototypeItem: ListTile(
+                    title: WordCard(word: wordMap['c']!.first),
+                  ),
                   itemBuilder: (context, index) {
                     return WordCard(word: wordMap['c']![index]);
                   }),
@@ -130,26 +143,22 @@ class WordCard extends StatelessWidget {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  word.name,
-                  style: theme.textTheme.bodyLarge,
-                ),
-                const SizedBox(
-                  width: 8.0,
-                ),
-                Text(
-                  '${word.difficult} ${word.type}',
-                  style: theme.textTheme.bodySmall,
-                ),
-                const Spacer(flex: 1),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.info))
-              ],
+        child: ListTile(
+          title: Row(children: [
+            Text(
+              word.name,
+              style: theme.textTheme.bodyLarge,
             ),
-          ],
+            const SizedBox(
+              width: 8.0,
+            ),
+            Text(
+              '${word.difficult} ${word.type}',
+              style: theme.textTheme.bodySmall,
+            ),
+            const Spacer(flex: 1),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.info))
+          ]),
         ),
       ),
     );
