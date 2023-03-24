@@ -5,6 +5,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io' as io;
 
+const WORD_TABLE = 'words';
+
 class DictDB {
   late Database _db;
 
@@ -39,20 +41,21 @@ class DictDB {
 
     await _db.transaction((txn) async {
       words = await txn.query(
-        "words",
+        WORD_TABLE,
       );
     });
 
     return words.map((e) => Word.fromJson(e)).toList();
   }
 
-  Future<List<Word>> getSlice(int limit) async {
+  Future<List<Word>> getWords(String difficult) async {
     List<Map> words = [];
 
     await _db.transaction((txn) async {
       words = await txn.query(
-        "words",
-        limit: limit,
+        WORD_TABLE,
+        where: "difficult like ?",
+        whereArgs: ["%$difficult%"],
       );
     });
 
