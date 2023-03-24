@@ -3,6 +3,8 @@ import 'package:mobile/dto/word.dto.dart';
 import 'package:mobile/init_db.dart';
 import 'package:provider/provider.dart';
 
+import 'components/word/word_mini_card.dart';
+
 main() async {
   runApp(const MyApp());
 }
@@ -82,9 +84,11 @@ class _StartPageState extends State<StartPage> {
         appBar: AppBar(
           title: TabBar(
               tabs: difficults
-                  .map((tab) => Tab(
-                        icon: Text(tab.toUpperCase()),
-                      ))
+                  .map(
+                    (tab) => Tab(
+                      icon: Text(tab.toUpperCase()),
+                    ),
+                  )
                   .toList()),
         ),
         body: Padding(
@@ -92,50 +96,14 @@ class _StartPageState extends State<StartPage> {
           child: TabBarView(
             children: difficults.map((difficult) {
               final d = wordMap[difficult]!;
-              var proto = d.isNotEmpty ? WordCard(word: d.first) : null;
+              var proto = d.isNotEmpty ? WordMiniCard(word: d.first) : null;
 
               return ListView.builder(
                 itemCount: d.length,
                 prototypeItem: proto,
-                itemBuilder: (context, index) => WordCard(word: d[index]),
+                itemBuilder: (context, index) => WordMiniCard(word: d[index]),
               );
             }).toList(),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class WordCard extends StatelessWidget {
-  const WordCard({
-    super.key,
-    required this.word,
-  });
-
-  final Word word;
-
-  @override
-  Widget build(BuildContext context) {
-    var theme = Theme.of(context);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListTile(
-          title: Row(children: [
-            Text(
-              word.name,
-              style: theme.textTheme.headlineSmall,
-            ),
-            const SizedBox(
-              width: 8.0,
-            ),
-            const Spacer(flex: 1),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.info))
-          ]),
-          subtitle: Text(
-            '${word.type} ${word.difficult}',
           ),
         ),
       ),
