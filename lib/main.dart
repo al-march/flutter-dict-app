@@ -40,7 +40,12 @@ class StartPage extends StatefulWidget {
 }
 
 class _StartPageState extends State<StartPage> {
-  List<Word> words = [];
+  List<String> difficults = [
+    'a',
+    'b',
+    'c',
+  ];
+
   Map<String, List<Word>> wordMap = {
     'a': [],
     'b': [],
@@ -72,56 +77,30 @@ class _StartPageState extends State<StartPage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       initialIndex: 1,
-      length: 3,
+      length: difficults.length,
       child: Scaffold(
         appBar: AppBar(
-          title: const TabBar(
-            tabs: [
-              Tab(
-                icon: Text('a'),
-              ),
-              Tab(
-                icon: Text('b'),
-              ),
-              Tab(
-                icon: Text('c'),
-              ),
-            ],
-          ),
+          title: TabBar(
+              tabs: difficults
+                  .map((tab) => Tab(
+                        icon: Text(tab.toUpperCase()),
+                      ))
+                  .toList()),
         ),
-        body: TabBarView(
-          children: [
-            Center(
-              child: ListView.builder(
-                  itemCount: wordMap['a']!.length,
-                  prototypeItem: ListTile(
-                    title: WordCard(word: wordMap['a']!.first),
-                  ),
-                  itemBuilder: (context, index) {
-                    return WordCard(word: wordMap['a']![index]);
-                  }),
-            ),
-            Center(
-              child: ListView.builder(
-                  itemCount: wordMap['b']!.length,
-                  prototypeItem: ListTile(
-                    title: WordCard(word: wordMap['b']!.first),
-                  ),
-                  itemBuilder: (context, index) {
-                    return WordCard(word: wordMap['b']![index]);
-                  }),
-            ),
-            Center(
-              child: ListView.builder(
-                  itemCount: wordMap['c']!.length,
-                  prototypeItem: ListTile(
-                    title: WordCard(word: wordMap['c']!.first),
-                  ),
-                  itemBuilder: (context, index) {
-                    return WordCard(word: wordMap['c']![index]);
-                  }),
-            ),
-          ],
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TabBarView(
+            children: difficults.map((difficult) {
+              final d = wordMap[difficult]!;
+              var proto = d.isNotEmpty ? WordCard(word: d.first) : null;
+
+              return ListView.builder(
+                itemCount: d.length,
+                prototypeItem: proto,
+                itemBuilder: (context, index) => WordCard(word: d[index]),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
@@ -147,18 +126,17 @@ class WordCard extends StatelessWidget {
           title: Row(children: [
             Text(
               word.name,
-              style: theme.textTheme.bodyLarge,
+              style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(
               width: 8.0,
             ),
-            Text(
-              '${word.difficult} ${word.type}',
-              style: theme.textTheme.bodySmall,
-            ),
             const Spacer(flex: 1),
             IconButton(onPressed: () {}, icon: const Icon(Icons.info))
           ]),
+          subtitle: Text(
+            '${word.type} ${word.difficult}',
+          ),
         ),
       ),
     );
