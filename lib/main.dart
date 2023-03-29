@@ -9,7 +9,6 @@ main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -23,28 +22,92 @@ class MyApp extends StatelessWidget {
             surface: const Color.fromARGB(255, 40, 40, 40),
           ),
         ),
-        home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Dictionary'),
-          ),
-          body: const AllWordsPage(),
-        ),
+        home: const Layout(),
       ),
     );
   }
 }
 
-class AppState extends ChangeNotifier {}
+class AppState extends ChangeNotifier {
+  int pageIndex = 0;
 
-class MainView extends StatelessWidget {
-  const MainView({super.key});
+  changePage(int index) {
+    pageIndex = index;
+    notifyListeners();
+  }
+}
+
+class Layout extends StatelessWidget {
+  const Layout({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    var state = context.watch<AppState>();
+    var theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dictionary'),
       ),
+      body: const Pages(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: state.pageIndex,
+        selectedItemColor: theme.colorScheme.primary,
+        unselectedItemColor: theme.colorScheme.onBackground,
+        onTap: (index) => state.changePage(index),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.games),
+            label: 'Games',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'Words',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Pages extends StatelessWidget {
+  const Pages({
+    super.key,
+  });
+
+  static const List<Widget> pages = [
+    Text(
+      'Index 0: Home',
+      style: TextStyle(fontSize: 30),
+    ),
+    Text(
+      'Index 1: Games',
+      style: TextStyle(fontSize: 30),
+    ),
+    AllWordsPage(),
+    Text(
+      'Index 3: Settings',
+      style: TextStyle(fontSize: 30),
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    var state = context.watch<AppState>();
+    var index = state.pageIndex;
+
+    return Center(
+      child: pages[index],
     );
   }
 }
