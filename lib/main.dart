@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/dto/word.dto.dart';
-import 'package:mobile/init_db.dart';
+import 'package:mobile/pages/all_words_page.dart';
 import 'package:provider/provider.dart';
-
-import 'components/word/word_mini_card.dart';
 
 main() async {
   runApp(const MyApp());
@@ -26,7 +23,12 @@ class MyApp extends StatelessWidget {
             surface: const Color.fromARGB(255, 40, 40, 40),
           ),
         ),
-        home: const StartPage(),
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text('Dictionary'),
+          ),
+          body: const AllWordsPage(),
+        ),
       ),
     );
   }
@@ -34,78 +36,14 @@ class MyApp extends StatelessWidget {
 
 class AppState extends ChangeNotifier {}
 
-class StartPage extends StatefulWidget {
-  const StartPage({super.key});
-
-  @override
-  State<StartPage> createState() => _StartPageState();
-}
-
-class _StartPageState extends State<StartPage> {
-  List<String> difficults = [
-    'a',
-    'b',
-    'c',
-  ];
-
-  Map<String, List<Word>> wordMap = {
-    'a': [],
-    'b': [],
-    'c': [],
-  };
-
-  @override
-  void initState() {
-    super.initState();
-    getWords();
-  }
-
-  getWords() async {
-    var dictDB = DictDB();
-    await dictDB.init();
-
-    var a = await dictDB.getWords('a');
-    var b = await dictDB.getWords('b');
-    var c = await dictDB.getWords('c');
-
-    setState(() {
-      wordMap['a'] = a;
-      wordMap['b'] = b;
-      wordMap['c'] = c;
-    });
-  }
+class MainView extends StatelessWidget {
+  const MainView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 1,
-      length: difficults.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: TabBar(
-              tabs: difficults
-                  .map(
-                    (tab) => Tab(
-                      icon: Text(tab.toUpperCase()),
-                    ),
-                  )
-                  .toList()),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TabBarView(
-            children: difficults.map((difficult) {
-              final d = wordMap[difficult]!;
-              var proto = d.isNotEmpty ? WordMiniCard(word: d.first) : null;
-
-              return ListView.builder(
-                itemCount: d.length,
-                prototypeItem: proto,
-                itemBuilder: (context, index) => WordMiniCard(word: d[index]),
-              );
-            }).toList(),
-          ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dictionary'),
       ),
     );
   }
