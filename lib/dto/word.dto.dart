@@ -25,3 +25,23 @@ class Word {
     'audio': audio,
   };
 }
+
+class Definition {
+  final String transcription;
+  final String meaning;
+  final List<String> examples;
+
+  const Definition({
+    required this.transcription,
+    required this.meaning,
+    required this.examples,
+  });
+
+  factory Definition.fromJson(Map<String, dynamic> json) {
+    return Definition(
+      transcription: json['transcription'],
+      meaning: json['meaning'],
+      examples: List.from(json['examples']),
+    );
+  }
+}
