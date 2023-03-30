@@ -5,11 +5,13 @@ class WordMiniCard extends StatelessWidget {
   const WordMiniCard({
     super.key,
     this.onPlay,
+    this.onShowDefinition,
     required this.word,
   });
 
   final Word word;
   final Function()? onPlay;
+  final Function()? onShowDefinition;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class WordMiniCard extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () => onShowDefinition?.call(),
               icon: const Icon(Icons.description),
             )
           ],
