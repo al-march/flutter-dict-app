@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/pages/all_words_page.dart';
+import 'package:mobile/pages/start_page.dart';
 import 'package:provider/provider.dart';
 
 main() async {
@@ -86,10 +87,7 @@ class Pages extends StatelessWidget {
   });
 
   static const List<Widget> pages = [
-    Text(
-      'Index 0: Home',
-      style: TextStyle(fontSize: 30),
-    ),
+    StartPage(),
     Text(
       'Index 1: Games',
       style: TextStyle(fontSize: 30),
