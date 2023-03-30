@@ -1,4 +1,4 @@
-
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../components/word/word_mini_card.dart';
@@ -13,6 +13,7 @@ class AllWordsPage extends StatefulWidget {
 }
 
 class _AllWordsPageState extends State<AllWordsPage> {
+  final player = AudioPlayer();
   List<String> difficults = [
     'all',
     'a1',
@@ -58,6 +59,11 @@ class _AllWordsPageState extends State<AllWordsPage> {
     });
   }
 
+  play(Word word) {
+    var url = 'https://www.oxfordlearnersdictionaries.com/${word.audio}';
+    player.play(UrlSource(url));
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -84,7 +90,10 @@ class _AllWordsPageState extends State<AllWordsPage> {
               return ListView.builder(
                 itemCount: d.length,
                 prototypeItem: proto,
-                itemBuilder: (context, index) => WordMiniCard(word: d[index]),
+                itemBuilder: (context, index) => WordMiniCard(
+                  word: d[index],
+                  onPlay: () => play(d[index]),
+                ),
               );
             }).toList(),
           ),

@@ -1,36 +1,15 @@
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-
 import '../../dto/word.dto.dart';
 
-class WordMiniCard extends StatefulWidget {
+class WordMiniCard extends StatelessWidget {
   const WordMiniCard({
     super.key,
+    this.onPlay,
     required this.word,
   });
 
   final Word word;
-
-  @override
-  State<WordMiniCard> createState() => _WordMiniCardState();
-}
-
-class _WordMiniCardState extends State<WordMiniCard> {
-
-  final player = AudioPlayer();
-  // TODO: реализовать остановку при повторном нажатии
-  bool isPlaying = false;
-
-  play() {
-    var url = 'https://www.oxfordlearnersdictionaries.com/${widget.word.audio}';
-    player.play(UrlSource(url));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final Function()? onPlay;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +22,7 @@ class _WordMiniCardState extends State<WordMiniCard> {
           mainAxisSize: MainAxisSize.max,
           children: [
             IconButton(
-              onPressed: play,
+              onPressed: () => onPlay?.call(),
               icon: const Icon(Icons.play_arrow),
             ),
             const SizedBox(width: 4.0),
@@ -55,12 +34,12 @@ class _WordMiniCardState extends State<WordMiniCard> {
                   Row(
                     children: [
                       Text(
-                        widget.word.name,
+                        word.name,
                         style: theme.textTheme.bodyLarge,
                       ),
                       const SizedBox(width: 8.0),
                       Text(
-                        '${widget.word.type} ${widget.word.difficult}',
+                        '${word.type} ${word.difficult}',
                         style: theme.textTheme.bodySmall!.copyWith(
                             color:
                                 theme.colorScheme.onSurface.withOpacity(0.6)),
@@ -78,7 +57,10 @@ class _WordMiniCardState extends State<WordMiniCard> {
                 ],
               ),
             ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.description))
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.description),
+            )
           ],
         ),
       ),
