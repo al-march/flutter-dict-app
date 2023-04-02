@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:mobile/pages/all_words_page.dart';
 import 'package:mobile/pages/start_page.dart';
@@ -15,6 +17,14 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => AppState(),
       child: MaterialApp(
+        scrollBehavior: MaterialScrollBehavior().copyWith(
+          dragDevices: {
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.stylus,
+            PointerDeviceKind.unknown
+          },
+        ),
         theme: ThemeData.from(
           useMaterial3: true,
           colorScheme: const ColorScheme.dark().copyWith(
