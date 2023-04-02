@@ -79,9 +79,9 @@ class _AllWordsPageState extends State<AllWordsPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      isDismissible: false,
-      enableDrag: false,
+      elevation: 0,
       backgroundColor: Colors.transparent,
+      shape: Border.all(width: 0, color: Colors.transparent),
       builder: (BuildContext context) => buildSheet(context, word),
     );
   }
@@ -146,12 +146,12 @@ class _AllWordsPageState extends State<AllWordsPage> {
       child: DraggableScrollableSheet(
         maxChildSize: 0.9,
         minChildSize: 0.3,
-        initialChildSize: 0.5,
+        initialChildSize: 0.7,
         builder: (_, controller) => Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
           ),
           child: Stack(
             children: [
