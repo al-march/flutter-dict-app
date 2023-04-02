@@ -77,55 +77,12 @@ class _AllWordsPageState extends State<AllWordsPage> {
 
   showWordDefinition(Word word) {
     showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (BuildContext context) {
-        var theme = Theme.of(context);
-
-        return FractionallySizedBox(
-          heightFactor: 0.4,
-          child: Column(
-            children: [
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        word.name,
-                        style: theme.textTheme.titleLarge,
-                      ),
-                      Row(
-                        children: [
-                          Text(word.difficult),
-                          const SizedBox(width: 6),
-                          Text(
-                            definition.transcription,
-                            style: TextStyle(
-                              color:
-                                  theme.colorScheme.onSurface.withOpacity(0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(definition.meaning),
-                    ],
-                  ),
-                ),
-              ),
-              const Spacer(flex: 1),
-              ElevatedButton(
-                child: const Text('Close BottomSheet'),
-                onPressed: () => Navigator.pop(context),
-              ),
-              const SizedBox(height: 12),
-            ],
-          ),
-        );
-      },
-    );
+        context: context,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext context) => buildSheet(context, word));
   }
 
   @override
@@ -170,6 +127,81 @@ class _AllWordsPageState extends State<AllWordsPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget makeDismissible({required Widget child}) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Navigator.of(context).pop(),
+        child: GestureDetector(child: child),
+      );
+
+  Widget buildSheet(BuildContext context, Word word) {
+    var theme = Theme.of(context);
+
+    return makeDismissible(
+      child: DraggableScrollableSheet(
+        maxChildSize: 0.9,
+        minChildSize: 0.3,
+        initialChildSize: 0.5,
+        builder: (_, controller) => Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: ListView(
+            controller: controller,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => play(word),
+                    icon: const Icon(Icons.play_arrow),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    word.name,
+                    style: theme.textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    definition.transcription,
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                  const Spacer(flex: 1),
+                  Text(word.difficult),
+                ],
+              ),
+              Divider(
+                color: theme.colorScheme.onBackground.withOpacity(0.4),
+              ),
+              const SizedBox(height: 16),
+              Text(definition.meaning),
+              const SizedBox(height: 20),
+              Text(
+                'Примеры:',
+                style: theme.textTheme.bodyLarge,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: definition.examples
+                    .map((e) => Padding(
+                          padding: const EdgeInsets.only(bottom: 6, top: 6),
+                          child: Text('- $e'),
+                        ))
+                    .toList(),
+              )
+            ],
+          ),
         ),
       ),
     );
