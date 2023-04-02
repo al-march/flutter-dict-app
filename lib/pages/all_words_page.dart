@@ -54,12 +54,21 @@ class _AllWordsPageState extends State<AllWordsPage> {
     var dictDB = DictDB();
     await dictDB.init();
 
-    var all = await dictDB.getAllWords();
-    var a1 = await dictDB.getWords('a1');
-    var a2 = await dictDB.getWords('a2');
-    var b1 = await dictDB.getWords('b1');
-    var b2 = await dictDB.getWords('b2');
-    var c1 = await dictDB.getWords('c1');
+    var futures = await Future.wait([
+      dictDB.getAllWords(),
+      dictDB.getWords('a1'),
+      dictDB.getWords('a2'),
+      dictDB.getWords('b1'),
+      dictDB.getWords('b2'),
+      dictDB.getWords('c1'),
+    ]);
+
+    var all = futures[0];
+    var a1 = futures[1];
+    var a2 = futures[2];
+    var b1 = futures[3];
+    var b2 = futures[4];
+    var c1 = futures[5];
 
     setState(() {
       wordMap['all'] = all;
