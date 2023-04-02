@@ -77,12 +77,13 @@ class _AllWordsPageState extends State<AllWordsPage> {
 
   showWordDefinition(Word word) {
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        isDismissible: false,
-        enableDrag: false,
-        backgroundColor: Colors.transparent,
-        builder: (BuildContext context) => buildSheet(context, word));
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) => buildSheet(context, word),
+    );
   }
 
   @override
@@ -152,54 +153,77 @@ class _AllWordsPageState extends State<AllWordsPage> {
             color: theme.colorScheme.surface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          child: ListView(
-            controller: controller,
+          child: Stack(
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    onPressed: () => play(word),
-                    icon: const Icon(Icons.play_arrow),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    word.name,
-                    style: theme.textTheme.titleLarge!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
+                  Container(
+                    width: 60,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.onBackground.withOpacity(0.8),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                        bottom: Radius.circular(20),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 6),
-                  Text(
-                    definition.transcription,
-                    style: TextStyle(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
-                  ),
-                  const Spacer(flex: 1),
-                  Text(word.difficult),
                 ],
               ),
-              Divider(
-                color: theme.colorScheme.onBackground.withOpacity(0.4),
+              ListView(
+                controller: controller,
+                children: [
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () => play(word),
+                        icon: const Icon(Icons.play_arrow),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        word.name,
+                        style: theme.textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        definition.transcription,
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+                      const Spacer(flex: 1),
+                      Text(word.difficult),
+                    ],
+                  ),
+                  Divider(
+                    color: theme.colorScheme.onBackground.withOpacity(0.4),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(definition.meaning),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Примеры:',
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: definition.examples
+                        .map((e) => Padding(
+                              padding: const EdgeInsets.only(bottom: 6, top: 6),
+                              child: Text('- $e'),
+                            ))
+                        .toList(),
+                  )
+                ],
               ),
-              const SizedBox(height: 16),
-              Text(definition.meaning),
-              const SizedBox(height: 20),
-              Text(
-                'Примеры:',
-                style: theme.textTheme.bodyLarge,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: definition.examples
-                    .map((e) => Padding(
-                          padding: const EdgeInsets.only(bottom: 6, top: 6),
-                          child: Text('- $e'),
-                        ))
-                    .toList(),
-              )
             ],
           ),
         ),
