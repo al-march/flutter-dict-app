@@ -6,15 +6,16 @@ import '../dto/word.dto.dart';
 import '../init_db.dart';
 
 var definition = const Definition(
-    transcription: '/ˈkæfeɪ/',
-    meaning:
-        'a place where you can buy drinks and simple meals. Alcohol is not usually served in British or American cafes',
-    examples: [
-      'There are small shops and pavement cafes around every corner.',
-      'an outdoor cafe serving drinks and light meals',
-      'They were having lunch at a cafe near the station',
-      'We stopped for a coffee in our favourite cafe',
-    ]);
+  transcription: '/ˈkæfeɪ/',
+  meaning:
+      'a place where you can buy drinks and simple meals. Alcohol is not usually served in British or American cafes',
+  examples: [
+    'There are small shops and pavement cafes around every corner.',
+    'an outdoor cafe serving drinks and light meals',
+    'They were having lunch at a cafe near the station',
+    'We stopped for a coffee in our favourite cafe',
+  ],
+);
 
 class AllWordsPage extends StatefulWidget {
   const AllWordsPage({super.key});
@@ -82,7 +83,10 @@ class _AllWordsPageState extends State<AllWordsPage> {
       elevation: 0,
       backgroundColor: Colors.transparent,
       shape: Border.all(width: 0, color: Colors.transparent),
-      builder: (BuildContext context) => buildSheet(context, word),
+      builder: (BuildContext context) => WordBottomSheet(
+        word: word,
+        onPlay: () => play(word),
+      ),
     );
   }
 
@@ -132,17 +136,24 @@ class _AllWordsPageState extends State<AllWordsPage> {
       ),
     );
   }
+}
 
-  Widget makeDismissible({required Widget child}) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => Navigator.of(context).pop(),
-        child: GestureDetector(child: child),
-      );
+class WordBottomSheet extends StatelessWidget {
+  const WordBottomSheet({
+    super.key,
+    required this.word,
+    required this.onPlay,
+  });
 
-  Widget buildSheet(BuildContext context, Word word) {
+  final Word word;
+  final Function onPlay;
+
+  @override
+  Widget build(BuildContext context) {
     var theme = Theme.of(context);
 
     return makeDismissible(
+      context: context,
       child: DraggableScrollableSheet(
         maxChildSize: 0.9,
         minChildSize: 0.3,
@@ -181,7 +192,7 @@ class _AllWordsPageState extends State<AllWordsPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        onPressed: () => play(word),
+                        onPressed: () => onPlay(),
                         icon: const Icon(Icons.play_arrow),
                       ),
                       const SizedBox(width: 6),
@@ -217,7 +228,10 @@ class _AllWordsPageState extends State<AllWordsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: definition.examples
                         .map((e) => Padding(
-                              padding: const EdgeInsets.only(bottom: 6, top: 6),
+                              padding: const EdgeInsets.only(
+                                bottom: 6,
+                                top: 6,
+                              ),
                               child: Text('- $e'),
                             ))
                         .toList(),
@@ -228,6 +242,17 @@ class _AllWordsPageState extends State<AllWordsPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget makeDismissible({
+    required Widget child,
+    required BuildContext context,
+  }) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => Navigator.of(context).pop(),
+      child: GestureDetector(child: child),
     );
   }
 }
