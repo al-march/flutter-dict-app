@@ -5,16 +5,7 @@ import '../components/word/word_mini_card.dart';
 import '../dto/word.dto.dart';
 import '../init_db.dart';
 
-var definition = const Definition(
-  meaning:
-      'a place where you can buy drinks and simple meals. Alcohol is not usually served in British or American cafes',
-  examples: [
-    'There are small shops and pavement cafes around every corner.',
-    'an outdoor cafe serving drinks and light meals',
-    'They were having lunch at a cafe near the station',
-    'We stopped for a coffee in our favourite cafe',
-  ],
-);
+var dictDB = DictDB();
 
 class AllWordsPage extends StatefulWidget {
   const AllWordsPage({super.key});
@@ -50,7 +41,6 @@ class _AllWordsPageState extends State<AllWordsPage> {
   }
 
   getWords() async {
-    var dictDB = DictDB();
     await dictDB.init();
 
     var futures = await Future.wait([
@@ -146,7 +136,7 @@ class _AllWordsPageState extends State<AllWordsPage> {
   }
 }
 
-class WordBottomSheet extends StatelessWidget {
+class WordBottomSheet extends StatefulWidget {
   const WordBottomSheet({
     super.key,
     required this.word,
@@ -155,6 +145,30 @@ class WordBottomSheet extends StatelessWidget {
 
   final Word word;
   final Function onPlay;
+
+  @override
+  State<WordBottomSheet> createState() => _WordBottomSheetState();
+}
+
+class _WordBottomSheetState extends State<WordBottomSheet> {
+  List<Definition> definitions = [];
+  Definition? mainDefinition;
+
+  @override
+  void initState() {
+    super.initState();
+    getDefinitions();
+  }
+
+  getDefinitions() async {
+    var defs = await dictDB.getWordDefinitions(widget.word.name);
+    setState(() {
+      definitions = defs;
+      if (definitions.isNotEmpty) {
+        mainDefinition = definitions[0];
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,12 +214,12 @@ class WordBottomSheet extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        onPressed: () => onPlay(),
+                        onPressed: () => widget.onPlay(),
                         icon: const Icon(Icons.play_arrow),
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        word.name,
+                        widget.word.name,
                         style: theme.textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
@@ -213,20 +227,26 @@ class WordBottomSheet extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        word.transcription,
+                        widget.word.transcription,
                         style: TextStyle(
                           color: theme.colorScheme.onSurface.withOpacity(0.6),
                         ),
                       ),
                       const Spacer(flex: 1),
-                      Text(word.difficult),
+                      Text(widget.word.difficult),
                     ],
                   ),
                   Divider(
                     color: theme.colorScheme.onBackground.withOpacity(0.4),
                   ),
                   const SizedBox(height: 16),
-                  Text(definition.meaning),
+                  if (mainDefinition != null)
+                    Text(
+                      mainDefinition!.meaning,
+                      style: theme.textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   const SizedBox(height: 20),
                   Text(
                     'Примеры:',
@@ -234,13 +254,13 @@ class WordBottomSheet extends StatelessWidget {
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: definition.examples
+                    children: definitions
                         .map((e) => Padding(
                               padding: const EdgeInsets.only(
                                 bottom: 6,
                                 top: 6,
                               ),
-                              child: Text('- $e'),
+                              child: Text('- ${e.meaning}'),
                             ))
                         .toList(),
                   )

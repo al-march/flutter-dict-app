@@ -32,17 +32,17 @@ class Word {
 
 class Definition {
   final String meaning;
-  final List<String> examples;
+  final String examples;
 
   const Definition({
     required this.meaning,
     required this.examples,
   });
 
-  factory Definition.fromJson(Map<String, dynamic> json) {
+  factory Definition.fromJson(Map json) {
     return Definition(
       meaning: json['meaning'],
-      examples: List.from(json['examples']),
+      examples: json['examples'],
     );
   }
 }

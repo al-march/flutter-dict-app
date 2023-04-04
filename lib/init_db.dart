@@ -6,6 +6,7 @@ import 'package:path/path.dart' as path;
 import 'dart:io' as io;
 
 const WORD_TABLE = 'words';
+const DEFINITION_TABLE = 'definitions';
 
 class DictDB {
   late Database _db;
@@ -22,7 +23,7 @@ class DictDB {
     /** 
      * TODO: return into if !dbExistsEnglish
      */
-    if (true) { // 
+    if (true) {
       // Copy from asset
       ByteData data = await rootBundle.load(path.join("db", "dict.db"));
       List<int> bytes =
@@ -63,5 +64,19 @@ class DictDB {
     });
 
     return words.map((e) => Word.fromJson(e)).toList();
+  }
+
+  Future<List<Definition>> getWordDefinitions(String wordName) async {
+    List<Map> definitions = [];
+
+    await _db.transaction((txn) async {
+      definitions = await txn.query(
+        DEFINITION_TABLE,
+        where: "name like ?",
+        whereArgs: ["%$wordName%"],
+      );
+    });
+
+    return definitions.map((e) => Definition.fromJson(e)).toList();
   }
 }
