@@ -3,12 +3,14 @@ class Word {
   final String type;
   final String difficult;
   final String audio;
+  final String transcription;
 
   Word({
     required this.name,
     required this.type,
     required this.difficult,
     required this.audio,
+    required this.transcription,
   });
 
   factory Word.fromJson(Map json) => Word(
@@ -16,6 +18,7 @@ class Word {
         type: json['type'],
         difficult: json['difficult'],
         audio: json['audio'],
+        transcription: json['transcription'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -23,23 +26,21 @@ class Word {
     'type': type,
     'difficult': difficult,
     'audio': audio,
+    'transcription': transcription
   };
 }
 
 class Definition {
-  final String transcription;
   final String meaning;
   final List<String> examples;
 
   const Definition({
-    required this.transcription,
     required this.meaning,
     required this.examples,
   });
 
   factory Definition.fromJson(Map<String, dynamic> json) {
     return Definition(
-      transcription: json['transcription'],
       meaning: json['meaning'],
       examples: List.from(json['examples']),
     );

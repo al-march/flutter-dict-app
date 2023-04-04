@@ -6,7 +6,6 @@ import '../dto/word.dto.dart';
 import '../init_db.dart';
 
 var definition = const Definition(
-  transcription: '/ˈkæfeɪ/',
   meaning:
       'a place where you can buy drinks and simple meals. Alcohol is not usually served in British or American cafes',
   examples: [
@@ -81,8 +80,8 @@ class _AllWordsPageState extends State<AllWordsPage> {
   }
 
   play(Word word) {
-    var url = 'https://www.oxfordlearnersdictionaries.com/${word.audio}';
-    player.play(UrlSource(url));
+    // var url = 'https://www.oxfordlearnersdictionaries.com/${word.audio}';
+    player.play(UrlSource(word.audio));
   }
 
   showWordDefinition(Word word) {
@@ -214,7 +213,7 @@ class WordBottomSheet extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        definition.transcription,
+                        word.transcription,
                         style: TextStyle(
                           color: theme.colorScheme.onSurface.withOpacity(0.6),
                         ),

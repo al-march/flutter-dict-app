@@ -19,7 +19,10 @@ class DictDB {
 
     bool dbExistsEnglish = await io.File(dbPathEnglish).exists();
 
-    if (!dbExistsEnglish) {
+    /** 
+     * TODO: return into if !dbExistsEnglish
+     */
+    if (true) { // 
       // Copy from asset
       ByteData data = await rootBundle.load(path.join("db", "dict.db"));
       List<int> bytes =
