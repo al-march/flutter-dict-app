@@ -49,7 +49,7 @@ class WordMiniCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    'Перевод',
+                    word.translation.ru,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     style: theme.textTheme.bodySmall!.copyWith(

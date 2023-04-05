@@ -4,6 +4,7 @@ class Word {
   final String difficult;
   final String audio;
   final String transcription;
+  final Translation translation;
 
   Word({
     required this.name,
@@ -11,6 +12,7 @@ class Word {
     required this.difficult,
     required this.audio,
     required this.transcription,
+    required this.translation,
   });
 
   factory Word.fromJson(Map json) => Word(
@@ -19,15 +21,32 @@ class Word {
         difficult: json['difficult'],
         audio: json['audio'],
         transcription: json['transcription'],
+        translation: Translation.fromJson(json['translation']),
       );
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'type': type,
-    'difficult': difficult,
-    'audio': audio,
-    'transcription': transcription
-  };
+        'name': name,
+        'type': type,
+        'difficult': difficult,
+        'audio': audio,
+        'transcription': transcription
+      };
+}
+
+class Translation {
+  final String ru;
+
+  Translation({
+    required this.ru,
+  });
+
+  factory Translation.fromJson(Map json) => Translation(
+        ru: json['ru'],
+      );
+
+  Map<String, dynamic> toJson() => {
+        'ru': ru,
+      };
 }
 
 class Definition {

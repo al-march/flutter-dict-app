@@ -7,6 +7,7 @@ import 'dart:io' as io;
 
 const WORD_TABLE = 'words';
 const DEFINITION_TABLE = 'definitions';
+const TRANSLATION_TABLE = 'translations';
 
 class DictDB {
   late Database _db;
@@ -49,7 +50,14 @@ class DictDB {
       );
     });
 
-    return words.map((e) => Word.fromJson(e)).toList();
+    var futures = words.map((json) async {
+      var translation = await getTranslation(json['name']);
+      var withTranslate = {...json, 'translation': translation};
+      var word = Word.fromJson(withTranslate);
+      return word;
+    }).toList();
+
+    return Future.wait(futures);
   }
 
   Future<List<Word>> getWords(String difficult) async {
@@ -78,5 +86,23 @@ class DictDB {
     });
 
     return definitions.map((e) => Definition.fromJson(e)).toList();
+  }
+
+  Future<Map> getTranslation(String wordName) async {
+    Map translation = Translation(ru: "-").toJson();
+
+    await _db.transaction((txn) async {
+      List<Map> map = await txn.query(
+        TRANSLATION_TABLE,
+        where: "name like ?",
+        whereArgs: ["%$wordName%"],
+      );
+
+      if (map.isNotEmpty) {
+        translation = map[0];
+      }
+    });
+
+    return translation;
   }
 }

@@ -43,21 +43,15 @@ class _AllWordsPageState extends State<AllWordsPage> {
   getWords() async {
     await dictDB.init();
 
-    var futures = await Future.wait([
-      dictDB.getAllWords(),
-      dictDB.getWords('a1'),
-      dictDB.getWords('a2'),
-      dictDB.getWords('b1'),
-      dictDB.getWords('b2'),
-      dictDB.getWords('c1'),
-    ]);
+    var all = await dictDB.getAllWords();
 
-    var all = futures[0];
-    var a1 = futures[1];
-    var a2 = futures[2];
-    var b1 = futures[3];
-    var b2 = futures[4];
-    var c1 = futures[5];
+    byDificult(String dif) => all.where((w) => w.difficult == dif).toList();
+
+    var a1 = byDificult('a1');
+    var a2 = byDificult('a2');
+    var b1 = byDificult('b1');
+    var b2 = byDificult('b2');
+    var c1 = byDificult('c1');
 
     setState(() {
       wordMap['all'] = all;
@@ -239,7 +233,15 @@ class _WordBottomSheetState extends State<WordBottomSheet> {
                   Divider(
                     color: theme.colorScheme.onBackground.withOpacity(0.4),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.word.translation.ru,
+                    style: theme.textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onBackground.withOpacity(0.8),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   if (mainDefinition != null)
                     Text(
                       mainDefinition!.meaning,
