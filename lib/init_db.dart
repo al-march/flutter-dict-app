@@ -8,6 +8,7 @@ import 'dart:io' as io;
 const WORD_TABLE = 'words';
 const DEFINITION_TABLE = 'definitions';
 const TRANSLATION_TABLE = 'translations';
+const PHRASES_TABLE = 'phrases';
 
 class DictDB {
   late Database _db;
@@ -104,5 +105,19 @@ class DictDB {
     });
 
     return translation;
+  }
+
+  Future<List<Phrase>> getPhrases(String wordName) async {
+    List<Map> json = [];
+
+    await _db.transaction((txn) async {
+      json = await txn.query(
+        PHRASES_TABLE,
+        where: "name like ?",
+        whereArgs: ["%$wordName%"],
+      );
+    });
+
+    return json.map((e) => Phrase.fromJson(e)).toList();
   }
 }

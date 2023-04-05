@@ -49,6 +49,24 @@ class Translation {
       };
 }
 
+class Phrase {
+  String name;
+  String en;
+  String ru;
+
+  Phrase({
+    required this.name,
+    required this.en,
+    required this.ru,
+  });
+
+  factory Phrase.fromJson(Map json) => Phrase(
+        name: json['name'],
+        en: json['en'],
+        ru: json['ru'],
+      );
+}
+
 class Definition {
   final String meaning;
   final String examples;

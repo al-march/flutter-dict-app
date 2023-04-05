@@ -145,22 +145,30 @@ class WordBottomSheet extends StatefulWidget {
 }
 
 class _WordBottomSheetState extends State<WordBottomSheet> {
-  List<Definition> definitions = [];
-  Definition? mainDefinition;
+  List<Phrase> phrases = [];
+  Definition? definition;
 
   @override
   void initState() {
     super.initState();
     getDefinitions();
+    getPhrases();
   }
 
   getDefinitions() async {
     var defs = await dictDB.getWordDefinitions(widget.word.name);
     setState(() {
-      definitions = defs;
-      if (definitions.isNotEmpty) {
-        mainDefinition = definitions[0];
+      if (defs.isNotEmpty) {
+        definition = defs.first;
       }
+    });
+  }
+
+  getPhrases() async {
+    var phrases = await dictDB.getPhrases(widget.word.name);
+    setState(() {
+      var limit = phrases.length >= 10 ? 10 : phrases.length;
+      this.phrases = phrases.sublist(0, limit);
     });
   }
 
@@ -198,76 +206,94 @@ class _WordBottomSheetState extends State<WordBottomSheet> {
                   ),
                 ],
               ),
-              ListView(
-                controller: controller,
-                children: [
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () => widget.onPlay(),
-                        icon: const Icon(Icons.play_arrow),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        widget.word.name,
-                        style: theme.textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        widget.word.transcription,
-                        style: TextStyle(
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                      ),
-                      const Spacer(flex: 1),
-                      Text(widget.word.difficult),
-                    ],
-                  ),
-                  Divider(
-                    color: theme.colorScheme.onBackground.withOpacity(0.4),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    widget.word.translation.ru,
-                    style: theme.textTheme.bodySmall!.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: theme.colorScheme.onBackground.withOpacity(0.8),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: ListView(
+                  controller: controller,
+                  children: [
+                    const SizedBox(
+                      height: 12,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  if (mainDefinition != null)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () => widget.onPlay(),
+                          icon: const Icon(Icons.play_arrow),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          widget.word.name,
+                          style: theme.textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          widget.word.transcription,
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                        ),
+                        const Spacer(flex: 1),
+                        Text(widget.word.difficult),
+                      ],
+                    ),
+                    Divider(
+                      color: theme.colorScheme.onBackground.withOpacity(0.4),
+                    ),
+                    const SizedBox(height: 8),
                     Text(
-                      mainDefinition!.meaning,
-                      style: theme.textTheme.bodyLarge!.copyWith(
-                        fontWeight: FontWeight.w700,
+                      widget.word.translation.ru,
+                      style: theme.textTheme.bodySmall!.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onBackground.withOpacity(0.8),
                       ),
                     ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Примеры:',
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: definitions
-                        .map((e) => Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: 6,
-                                top: 6,
-                              ),
-                              child: Text('- ${e.meaning}'),
-                            ))
-                        .toList(),
-                  )
-                ],
+                    const SizedBox(height: 10),
+                    if (definition != null)
+                      Text(
+                        definition!.meaning,
+                        style: theme.textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Примеры:',
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: phrases
+                          .map((e) => Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: 6,
+                                  top: 6,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('- ${e.en}'),
+                                    Text('- ${e.ru}'),
+                                  ],
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                  ],
+                ),
               ),
+              Positioned(
+                bottom: 0,
+                left: 30,
+                right: 30,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("Закрыть"),
+                ),
+              )
             ],
           ),
         ),
